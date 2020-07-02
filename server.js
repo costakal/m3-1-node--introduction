@@ -4,6 +4,8 @@
 const express = require("express");
 const morgan = require("morgan");
 
+let wantsToHearJoke = false;
+
 express()
   // Below are methods that are included in express(). We chain them for convenience.
   // --------------------------------------------------------------------------------
@@ -47,6 +49,61 @@ express()
 
   .get("/parrot-message", (req, res) => {
     const message = { author: "parrot", text: req.query.text };
+    const randomTime = Math.floor(Math.random() * 3000);
+    setTimeout(() => {
+      res.status(200).json({ status: 200, message });
+    }, randomTime);
+    console.log(req.query);
+  })
+
+  .get("/bot-message", (req, res) => {
+    const getBotMessage = (text) => {
+      const commonGreetings = ["hi", "hello", "howdy"];
+      const commonGoodbyes = ["bye", "goodbye", "later"];
+      const somethingFunny = ["something funny"];
+      const jokes = [
+        "What is fast, loud and crunchy? A rocket chip!",
+        "What do you call a dinosaur that is sleeping: A dino-snore!",
+        "Why did the teddy bear say no to dessert? Because she was stuffed.",
+      ];
+      let botMsg = req.query.text;
+
+      commonGreetings.forEach((greeting) => {
+        if (text.toLowerCase().includes(greeting)) {
+          botMsg = "Hello!";
+        }
+      });
+
+      commonGoodbyes.forEach((goodbye) => {
+        if (text.toLowerCase().includes(goodbye)) {
+          botMsg = "Goodbye!";
+        }
+      });
+
+      if (wantsToHearJoke === true) {
+        if (text.toLowerCase().includes("yes")) {
+          botMsg = jokes[Math.floor(Math.random() * 2)];
+          wantsToHearJoke = false;
+        } else if (text.toLowerCase().includes("no")) {
+          botMsg = "Goodbye";
+          wantsToHearJoke = false;
+        }
+      }
+
+      somethingFunny.forEach((funny) => {
+        if (text.toLowerCase().includes(funny)) {
+          botMsg = "Wanna hear a joke?";
+          wantsToHearJoke = true;
+        }
+      });
+
+      return botMsg;
+    };
+
+    const message = {
+      author: "bot",
+      text: `Bzzt ${getBotMessage(req.query.text)}`,
+    };
     const randomTime = Math.floor(Math.random() * 3000);
     setTimeout(() => {
       res.status(200).json({ status: 200, message });
