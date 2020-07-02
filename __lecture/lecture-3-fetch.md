@@ -14,7 +14,8 @@ The syntax is very similar to Promises.
 For now, we will follow this template for our communications with the server.
 
 ```js
-fetch('<SERVER_ENDPOINT_URL>')
+// NOT TO BE WRITTEN IN NODE, ONLY IN JAVASCRIPT.
+fetch("<SERVER_ENDPOINT_URL>")
   .then((res) => res.json()) // convert the response to json
   .then((data) => {
     // do something with the data from the server
@@ -57,7 +58,7 @@ To keep things clean and simple,
 
 ```js
 // frontend
-fetch('/cat-message')
+fetch("/cat-message")
   .then((res) => res.json())
   .then((data) => {
     console.log(data);
